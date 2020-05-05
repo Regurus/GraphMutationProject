@@ -1,12 +1,22 @@
+import edu.uci.ics.jung.graph.UndirectedSparseGraph;
 import org.jgrapht.Graph;
+
 
 import java.util.Random;
 
 public class MutatableGraph {
-    private Graph contained;
+    private Graph jgraphContained;
+    //maintaining two type of graphs for additional score capability.
+    private UndirectedSparseGraph jungContained;
     private static Random generator = new Random();
-    public MutatableGraph(Graph contained) {
-        this.contained = contained;
+
+    public UndirectedSparseGraph getJungContained() {
+        return jungContained;
+    }
+
+    public MutatableGraph(Graph jgraphContained) {
+        this.jgraphContained = jgraphContained;
+        this.jungContained = JUNG_Adapter.getJungGraph(jgraphContained);
     }
 
     public void applyOperator(Mutator mutator){
@@ -21,14 +31,14 @@ public class MutatableGraph {
     }
 
     private void substractRandom(){
-        Object[] edges = this.contained.edgeSet().toArray();
+        Object[] edges = this.jgraphContained.edgeSet().toArray();
         int removedIndex = generator.nextInt(edges.length);
-        this.contained.removeEdge(edges[removedIndex]);
-        System.out.println(this.contained.edgeSet());
+        this.jgraphContained.removeEdge(edges[removedIndex]);
+        System.out.println(this.jgraphContained.edgeSet());
     }
 
     public void addRandom(){
-        Object[] vertices = this.contained.vertexSet().toArray();
+        Object[] vertices = this.jgraphContained.vertexSet().toArray();
         int sourceVert = generator.nextInt(vertices.length);
         int destVert = generator.nextInt(vertices.length);
         //filtering self edges
@@ -36,10 +46,10 @@ public class MutatableGraph {
             destVert = generator.nextInt(vertices.length);
             //TODO existing edge
         }
-        this.contained.addEdge(vertices[sourceVert],vertices[destVert]);
+        this.jgraphContained.addEdge(vertices[sourceVert],vertices[destVert]);
     }
 
-    public Graph getContained(){
-        return this.contained;
+    public Graph getJgraphContained(){
+        return this.jgraphContained;
     }
 }

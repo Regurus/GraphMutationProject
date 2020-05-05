@@ -40,21 +40,21 @@ public class Utils {
             }
             lines.add(lineBuilder.toString());
         }
-        dumpToFile(lines,fileName,head);
+        dumpToFile(lines,fileName,head,true);
     }
 
-    private static void dumpToFile (List<String> lines, String filename,String headerLine){
+    static void dumpToFile (List<String> lines, String filename,String headerLine,boolean append){
         System.out.println("File write in progress...");
         BufferedWriter writer = null;
         try {
             File fileExistsCheck = new File(filename);
             boolean exists = fileExistsCheck.exists();
-            FileWriter file = new FileWriter(filename, true); //true tells to append data.
+            FileWriter file = new FileWriter(filename, append); //true tells to append data.
             writer = new BufferedWriter(file);
-            if(!exists)
-                writer.write(headerLine+'\n');
+            if(!exists||!append)
+                writer.write(headerLine+"\r\n");
             for(String line:lines){
-                writer.write(line+'\n');
+                writer.write(line+"\r\n");
             }
         }
         catch (IOException e) {

@@ -45,7 +45,7 @@ public class JGraphXAdapterDemo
     public void init()
     {
         // create a JGraphT graph
-        Graph g = MutatableGraphFactory.getBarabasiGraph(2,100).getContained();
+        Graph g = MutatableGraphFactory.getBarabasiGraph(2,100).getJgraphContained();
 
         // create a visualization using JGraph, via an adapter
         jgxAdapter = new JGraphXAdapter<>(g);

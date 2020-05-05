@@ -13,13 +13,8 @@ public class Runner {
 
 
     public static void main(String[] args) {
-
         MutatableGraph g1 = MutatableGraphFactory.getBarabasiGraph(6,100);
-        //MutatableGraph g1 = MutatableGraphFactory.openCSV("test.csv");
-        List<Map> apriori = Scores.scoreGraph(g1.getContained());
-        g1 = applyMutators(g1,(int)(g1.getContained().edgeSet().size()*MUTATION_FACTOR));
-        List<Map> postpriori = Scores.scoreGraph(g1.getContained());
-        Utils.saveRunResults(postpriori,apriori,Scores.getScoreNames(),""+g1.hashCode(),"testFile.csv");
+        Scores.getEigenvecorCentrality(g1);
     }
 
     public static MutatableGraph applyMutators(MutatableGraph graph, int howMuch){

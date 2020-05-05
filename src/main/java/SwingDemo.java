@@ -18,7 +18,7 @@ public class SwingDemo extends JFrame
     {
         super("Hello, World!");
 
-        Graph g = MutatableGraphFactory.getBarabasiGraph(2,100).getContained();
+        Graph g = MutatableGraphFactory.getBarabasiGraph(2,100).getJgraphContained();
 
         // create a visualization using JGraph, via an adapter
         JGraphXAdapter<String, DefaultEdge> jgxAdapter = new JGraphXAdapter<>(g);

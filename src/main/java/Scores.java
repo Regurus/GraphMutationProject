@@ -1,10 +1,11 @@
 import org.jgrapht.Graph;
 import org.jgrapht.alg.interfaces.VertexScoringAlgorithm;
 import org.jgrapht.alg.scoring.*;
-
+import edu.uci.ics.jung.algorithms.scoring.EigenvectorCentrality;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class Scores {
 
@@ -70,15 +71,15 @@ public class Scores {
             System.out.println("Score: "+key.toString()+" "+scores.get(key).toString());
         }
     }
-    public static List<Map> scoreGraph(Graph graph){
+    public static List<Map> scoreGraph(MutatableGraph graph){
         ArrayList<Map> result = new ArrayList<Map>();
-        result.add(getScores(new ClusteringCoefficient(graph)));
-        result.add(getScores(new Coreness(graph)));
-        result.add(getScores(new AlphaCentrality(graph)));
-        result.add(getScores(new BetweennessCentrality(graph)));
-        result.add(getScores(new ClosenessCentrality(graph)));
-        result.add(getScores(new HarmonicCentrality(graph)));
-        result.add(getScores(new PageRank(graph)));
+        result.add(getScores(new ClusteringCoefficient(graph.getJgraphContained())));
+        result.add(getScores(new Coreness(graph.getJgraphContained())));
+        result.add(getScores(new AlphaCentrality(graph.getJgraphContained())));
+        result.add(getScores(new BetweennessCentrality(graph.getJgraphContained())));
+        result.add(getScores(new ClosenessCentrality(graph.getJgraphContained())));
+        result.add(getScores(new HarmonicCentrality(graph.getJgraphContained())));
+        result.add(getScores(new PageRank(graph.getJgraphContained())));
         //eigenvector
 
         //orbits
@@ -94,6 +95,18 @@ public class Scores {
         result.add("Coreness");
         result.add("HarmonicCentrality");
         result.add("PageRank");
+        return result;
+    }
+
+    public static List<String> getEigenvecorCentrality(MutatableGraph graph){
+        EigenvectorCentrality eig = new EigenvectorCentrality(graph.getJungContained());
+        ArrayList<String> result = new ArrayList<String>();
+        Set<String> edges = graph.getJgraphContained().vertexSet();
+        for(String vert: edges){
+            Object res = eig.getVertexScore(vert);
+            System.out.println(vert);
+            result.add(""+res);
+        }
         return result;
     }
 
