@@ -1,11 +1,10 @@
+import edu.uci.ics.jung.algorithms.scoring.VertexScorer;
 import org.jgrapht.Graph;
 import org.jgrapht.alg.interfaces.VertexScoringAlgorithm;
 import org.jgrapht.alg.scoring.*;
 import edu.uci.ics.jung.algorithms.scoring.EigenvectorCentrality;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+
+import java.util.*;
 
 public class Scores {
 
@@ -80,7 +79,7 @@ public class Scores {
         result.add(getScores(new ClosenessCentrality(graph.getJgraphContained())));
         result.add(getScores(new HarmonicCentrality(graph.getJgraphContained())));
         result.add(getScores(new PageRank(graph.getJgraphContained())));
-        //eigenvector
+        result.add(getEigenvecorCentrality(graph));
 
         //orbits
         return result;
@@ -95,17 +94,19 @@ public class Scores {
         result.add("Coreness");
         result.add("HarmonicCentrality");
         result.add("PageRank");
+        result.add("Eigenvector");//Eigenvector
         return result;
     }
 
-    public static List<String> getEigenvecorCentrality(MutatableGraph graph){
+    public static Map<String,String> getEigenvecorCentrality(MutatableGraph graph){
         EigenvectorCentrality eig = new EigenvectorCentrality(graph.getJungContained());
-        ArrayList<String> result = new ArrayList<String>();
-        Set<String> edges = graph.getJgraphContained().vertexSet();
-        for(String vert: edges){
+        eig.evaluate();
+        Map<String,String> result = new HashMap<>();
+        Set<String> vertexSet = graph.getJgraphContained().vertexSet();
+        for(String vert: vertexSet){
             Object res = eig.getVertexScore(vert);
             System.out.println(vert);
-            result.add(""+res);
+            result.put(vert.toString(),res.toString());
         }
         return result;
     }

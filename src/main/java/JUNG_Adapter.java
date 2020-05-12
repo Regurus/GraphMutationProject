@@ -12,7 +12,7 @@ public class JUNG_Adapter {
         Set<String> verts = graph.vertexSet();
         Set<DefaultEdge> edges = graph.edgeSet();
         UndirectedSparseGraph<String, String> g = new UndirectedSparseGraph<String, String>();
-        // Add some vertices. From above we defined these to be type Integer.
+        // Add some vertices. From above we defined these to be type String.
         for(String vert:verts){
             g.addVertex(vert);
         }

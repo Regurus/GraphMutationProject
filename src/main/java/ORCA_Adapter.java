@@ -54,7 +54,7 @@ public class ORCA_Adapter {
             lines.add(edgeRepr);
         }
         String headerLine = this.n+" "+edges.size();
-        Utils.dumpToFile(lines,CACHE_FILE,headerLine,false);
+        IOUtils.dumpResultsToFile(lines,CACHE_FILE,headerLine,false);
     }
 
     private void runORCA(){
@@ -65,9 +65,7 @@ public class ORCA_Adapter {
             int exitVal = proc.waitFor();
             if(exitVal!=0)
                 throw new RuntimeException("ORCA runtime Error occured!");
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
+        } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
     }
@@ -85,8 +83,6 @@ public class ORCA_Adapter {
                 }
                 lineCounter++;
             }
-        } catch (FileNotFoundException ex) {
-            ex.printStackTrace();
         } catch (IOException ex) {
             ex.printStackTrace();
         }

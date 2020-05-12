@@ -1,15 +1,20 @@
-import org.jgrapht.Graph;
+import org.jgrapht.graph.DefaultEdge;
+import org.jgrapht.graph.DefaultUndirectedGraph;
+import org.jgrapht.nio.ImportException;
+import org.jgrapht.nio.csv.CSVExporter;
+import org.jgrapht.nio.csv.CSVFormat;
+import org.jgrapht.nio.csv.CSVImporter;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Stack;
 
-public class Utils {
+import static org.jgrapht.util.SupplierUtil.createStringSupplier;
+
+
+//collections of IO utility functions
+public class IOUtils {
     /**
      * WARNING: appends to file if file exists
      * @param newScores map vertex->score for graph after manipulation
@@ -40,10 +45,10 @@ public class Utils {
             }
             lines.add(lineBuilder.toString());
         }
-        dumpToFile(lines,fileName,head,true);
+        dumpResultsToFile(lines,fileName,head,true);
     }
 
-    static void dumpToFile (List<String> lines, String filename,String headerLine,boolean append){
+    static void dumpResultsToFile(List<String> lines, String filename, String headerLine, boolean append){
         System.out.println("File write in progress...");
         BufferedWriter writer = null;
         try {
@@ -71,4 +76,33 @@ public class Utils {
             }
         }
     }
+    //saves the graph instance to file
+    public static void graphToFile(MutatableGraph graph,String path){
+        CSVExporter exporter = new CSVExporter(CSVFormat.MATRIX,';');
+        exporter.setParameter(CSVFormat.Parameter.MATRIX_FORMAT_NODEID,true);
+        File target = new File(path);
+        exporter.exportGraph(graph.getJgraphContained(),target);
+    }
+
+    public static MutatableGraph fileToGraph(String path){
+        CSVImporter importer = new CSVImporter(CSVFormat.MATRIX,';');
+        importer.setParameter(CSVFormat.Parameter.MATRIX_FORMAT_NODEID,true);
+        File target = new File(path);
+        try {
+            InputStreamReader inputStreamReader = new InputStreamReader(new FileInputStream(target));
+            DefaultUndirectedGraph<String, DefaultEdge> graph = new DefaultUndirectedGraph<String, DefaultEdge>(DefaultEdge.class);
+            graph.setVertexSupplier(createStringSupplier());
+            importer.importGraph(graph,inputStreamReader);
+            return new MutatableGraph(graph);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            System.out.println("File not found");
+        }
+        catch (ImportException ie){
+            ie.printStackTrace();
+            System.out.println("Import error!");
+        }
+        return null;
+    }
+
 }
