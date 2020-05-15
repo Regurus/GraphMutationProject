@@ -40,7 +40,7 @@ class MutatableGraphTest {
             JUNGRes.put(vert.toString(),res.toString());
         }
         VertexScoringAlgorithm scoringAlgorithm = new org.jgrapht.alg.scoring.BetweennessCentrality(tested.getJgraphContained());
-        Map<String,Double> JGraphRes = scoringAlgorithm.getScores();
+        Map JGraphRes = scoringAlgorithm.getScores();
         assertTrue(JUNGRes.size()==JGraphRes.size(),"Betweenness Centrality size fail!");
         for(int i=0;i<JUNGRes.size();i++){
             assertTrue(areFloatsEquals(JUNGRes.get(""+i),""+JGraphRes.get(""+i)),"Betweenness Centrality comparison fail!");
@@ -63,7 +63,7 @@ class MutatableGraphTest {
             assertTrue(areFloatsEquals(JUNGRes.get(""+i),""+JGraphRes.get(""+i)),"Closeness Centrality comparison fail!");
         }
     }
-    //better way of comparing float point numbers
+    //better way of comparing float point numbers considering their natural inaccuracy
     private boolean areFloatsEquals(String a,String b){
         BigDecimal A = new BigDecimal(a,new MathContext(10, RoundingMode.HALF_UP));
         BigDecimal B = new BigDecimal(b,new MathContext(10, RoundingMode.HALF_UP));
