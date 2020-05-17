@@ -24,7 +24,7 @@ public class IOUtils {
      * @param graphName identifier of current graph
      * @param fileName filename to save into
      */
-    public static void saveRunResults(List<Map> newScores, List<Map> oldScores, List<String> scoreNames, String graphName,String fileName){
+    public static synchronized void saveRunResults(List<Map> newScores, List<Map> oldScores, List<String> scoreNames, String graphName,String fileName){
         Object[] keys = newScores.get(0).keySet().toArray();
         ArrayList<String> lines = new ArrayList();
         //build header line
@@ -49,7 +49,6 @@ public class IOUtils {
     }
 
     static void dumpResultsToFile(List<String> lines, String filename, String headerLine, boolean append){
-        System.out.println("File write in progress...");
         BufferedWriter writer = null;
         try {
             File fileExistsCheck = new File(filename);

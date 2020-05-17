@@ -2,8 +2,7 @@ import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultEdge;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Set;
+import java.util.*;
 
 /**
  * class utilizing existing code for computing graphlet count in graph and adapting it for java runtime
@@ -13,14 +12,16 @@ import java.util.Set;
 public class ORCA_Adapter {
 
     private final String BASE_COMMAND = "resources/orca.exe ";
-    private final String CACHE_FILE = "resources/orca_cache.ch";
-    private final String TEMP_FILE = "resources/orca_temp.ch";
+    private String CACHE_FILE = "resources/orca_cache1.ch";
+    private String TEMP_FILE = "resources/orca_temp1.ch";
     private int n = 0;
     private String mode = "node ";
     private int orbit_size=4;
     private int wide = 15;
 
-    public ORCA_Adapter(String mode, int orbit_size){
+    public ORCA_Adapter(String mode, int orbit_size,String instance){
+        CACHE_FILE = "resources/orca_cache"+instance+".ch";
+        TEMP_FILE = "resources/orca_temp"+instance+".ch";
         if(orbit_size==5){
             this.orbit_size = 5;
             this.wide=73;
@@ -57,7 +58,7 @@ public class ORCA_Adapter {
         IOUtils.dumpResultsToFile(lines,CACHE_FILE,headerLine,false);
     }
 
-    private void runORCA(){
+    private synchronized void runORCA(){
         try {
             String command = BASE_COMMAND+mode+orbit_size+" "+CACHE_FILE+" "+TEMP_FILE;
             Runtime run  = Runtime.getRuntime();
@@ -87,6 +88,25 @@ public class ORCA_Adapter {
             ex.printStackTrace();
         }
         return result;
+    }
+
+    public List<String> addGraphletsNames(List<String> scores){
+        for(int i=0;i<this.wide;i++){
+            scores.add("G"+(i+1));
+        }
+        return scores;
+    }
+
+    public List<Map> addGraphletScores(List<Map> scores, MutatableGraph graph){
+        long[][] orbits = this.getOrbits(graph);
+        for(int i=0;i<this.wide;i++){
+            HashMap<String,String> map = new HashMap();
+            for(int j=0;j<this.n;j++){
+                map.put(""+j,""+orbits[j][i]);
+            }
+            scores.add(map);
+        }
+        return scores;
     }
 
 }

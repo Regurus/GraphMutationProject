@@ -4,7 +4,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.Main">
+<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UIController">
    <children>
       <VBox fx:id="screen_side_left" prefHeight="400.0" prefWidth="90.0" styleClass="JMetroStyleClass.BACKGROUND" />
       <VBox fx:id="main_toolpane" prefHeight="400.0" prefWidth="425.0">
@@ -27,14 +27,14 @@
                   </Label>
                   <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.rowIndex="3">
                      <children>
-                        <Button fx:id="run" mnemonicParsing="false" prefHeight="47.0" prefWidth="227.0" style="-fx-background-color: #0078D7;" text="Execute" textAlignment="CENTER">
+                        <Button fx:id="run" mnemonicParsing="false" onAction="#start" prefHeight="47.0" prefWidth="227.0" style="-fx-background-color: #0078D7;" text="Execute" textAlignment="CENTER">
                            <font>
                               <Font name="Calibri Light" size="18.0" />
                            </font>
                         </Button>
                      </children>
                   </HBox>
-                  <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" GridPane.rowIndex="1">
+                  <TabPane fx:id="tab_pane" prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" GridPane.rowIndex="1">
                     <tabs>
                       <Tab text="Experiment Parts">
                            <content>
@@ -95,13 +95,13 @@
                                           <HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="200.0" GridPane.rowIndex="2">
                                              <children>
                                                 <Label text="N: " />
-                                                <TextField fx:id="bar_n" disable="true" prefHeight="25.0" prefWidth="50.0" />
+                                                <TextField fx:id="bar_n" disable="true" prefHeight="25.0" prefWidth="50.0" text="0" />
                                              </children>
                                           </HBox>
                                           <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
                                              <children>
                                                 <Label text=" M: " />
-                                                <TextField fx:id="bar_m" disable="true" prefHeight="25.0" prefWidth="50.0" />
+                                                <TextField fx:id="bar_m" disable="true" prefHeight="25.0" prefWidth="50.0" text="0" />
                                              </children>
                                           </HBox>
                                        </children>
@@ -138,13 +138,13 @@
                                           <HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="200.0" GridPane.rowIndex="4">
                                              <children>
                                                 <Label text="N: " />
-                                                <TextField fx:id="pet_n" disable="true" prefHeight="25.0" prefWidth="50.0" />
+                                                <TextField fx:id="pet_n" disable="true" prefHeight="25.0" prefWidth="50.0" text="0" />
                                              </children>
                                           </HBox>
                                           <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="4">
                                              <children>
                                                 <Label text=" K: " />
-                                                <TextField fx:id="pet_k" disable="true" prefHeight="25.0" prefWidth="50.0" />
+                                                <TextField fx:id="pet_k" disable="true" prefHeight="25.0" prefWidth="50.0" text="0" />
                                              </children>
                                           </HBox>
                                        </children>
@@ -179,7 +179,7 @@
                                           <HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="200.0" GridPane.rowIndex="2">
                                              <children>
                                                 <Label text="Dimentions: " />
-                                                <TextField fx:id="hyp_dim" disable="true" prefHeight="25.0" prefWidth="50.0" />
+                                                <TextField fx:id="hyp_dim" disable="true" prefHeight="25.0" prefWidth="50.0" text="0" />
                                              </children>
                                           </HBox>
                                        </children>
@@ -210,17 +210,17 @@
                                           <HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="200.0" GridPane.rowIndex="2">
                                              <children>
                                                 <Label text="N: " />
-                                                <TextField fx:id="kle_n" disable="true" prefHeight="25.0" prefWidth="50.0" />
+                                                <TextField fx:id="kle_n" disable="true" prefHeight="25.0" prefWidth="50.0" text="0" />
                                                 <Label text=" P: " />
-                                                <TextField fx:id="kle_p" disable="true" prefHeight="25.0" prefWidth="50.0" />
+                                                <TextField fx:id="kle_p" disable="true" prefHeight="25.0" prefWidth="50.0" text="0" />
                                              </children>
                                           </HBox>
                                           <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
                                              <children>
                                                 <Label text=" Q: " />
-                                                <TextField fx:id="kle_q" disable="true" prefHeight="25.0" prefWidth="50.0" />
+                                                <TextField fx:id="kle_q" disable="true" prefHeight="25.0" prefWidth="50.0" text="0" />
                                                 <Label text=" R: " />
-                                                <TextField fx:id="kle_r" disable="true" prefHeight="25.0" prefWidth="50.0" />
+                                                <TextField fx:id="kle_r" disable="true" prefHeight="25.0" prefWidth="50.0" text="0" />
                                              </children>
                                           </HBox>
                                        </children>
@@ -251,13 +251,13 @@
                                           <HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="200.0" GridPane.rowIndex="2">
                                              <children>
                                                 <Label text="M: " />
-                                                <TextField fx:id="wind_m" disable="true" prefHeight="25.0" prefWidth="50.0" />
+                                                <TextField fx:id="wind_m" disable="true" prefHeight="25.0" prefWidth="50.0" text="0" />
                                              </children>
                                           </HBox>
                                           <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
                                              <children>
                                                 <Label text=" N: " />
-                                                <TextField fx:id="wind_n" disable="true" prefHeight="25.0" prefWidth="50.0" />
+                                                <TextField fx:id="wind_n" disable="true" prefHeight="25.0" prefWidth="50.0" text="0" />
                                              </children>
                                           </HBox>
                                        </children>
@@ -288,7 +288,7 @@
                                           <HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="200.0" GridPane.rowIndex="2">
                                              <children>
                                                 <Label text="Size: " />
-                                                <TextField fx:id="whe_sz" disable="true" prefHeight="25.0" prefWidth="50.0" />
+                                                <TextField fx:id="whe_sz" disable="true" prefHeight="25.0" prefWidth="50.0" text="0" />
                                              </children>
                                           </HBox>
                                        </children>
@@ -377,17 +377,19 @@
                                                             <RadioButton fx:id="ex_rnd_vert" mnemonicParsing="false" onAction="#resetInputsExRnd" text="Percentage of vertices" GridPane.rowIndex="2" />
                                                             <HBox prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1">
                                                                <children>
-                                                                  <TextField fx:id="ex_rnd_const_inp" prefHeight="25.0" prefWidth="70.0" />
+                                                                  <TextField fx:id="ex_rnd_const_inp" prefHeight="25.0" prefWidth="70.0" text="0" />
                                                                </children>
                                                             </HBox>
-                                                            <HBox prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                                            <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
                                                                <children>
-                                                                  <TextField fx:id="ex_rnd_edg_inp" prefHeight="25.0" prefWidth="70.0" />
+                                                                  <TextField fx:id="ex_rnd_edg_inp" prefHeight="25.0" prefWidth="70.0" text="0" />
+                                                                  <Label text="\%" />
                                                                </children>
                                                             </HBox>
-                                                            <HBox prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                                                            <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
                                                                <children>
-                                                                  <TextField fx:id="ex_rnd_vert_inp" prefHeight="25.0" prefWidth="70.0" />
+                                                                  <TextField fx:id="ex_rnd_vert_inp" prefHeight="25.0" prefWidth="70.0" text="0" />
+                                                                  <Label text="\%" />
                                                                </children>
                                                             </HBox>
                                                          </children>
@@ -418,7 +420,7 @@
                                              <children>
                                                 <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
                                                    <children>
-                                                      <TextField prefHeight="25.0" prefWidth="297.0" />
+                                                      <TextField fx:id="saveAddress" prefHeight="25.0" prefWidth="297.0" />
                                                       <Button mnemonicParsing="false" onAction="#handleSave" style="-fx-background-color: #0078D7;" text="Browse" />
                                                    </children>
                                                 </HBox>
@@ -427,7 +429,7 @@
                                           <HBox alignment="BOTTOM_LEFT" prefHeight="100.0" prefWidth="200.0">
                                              <children>
                                                 <Label text="Amount of threads to run in:  " />
-                                                <TextField prefHeight="25.0" prefWidth="46.0" text="1" />
+                                                <TextField fx:id="threads" prefHeight="25.0" prefWidth="46.0" text="1" />
                                              </children>
                                           </HBox>
                                        </children>
@@ -459,7 +461,7 @@
                         </HBox>
                         <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.rowIndex="2">
                            <children>
-                              <Label fx:id="sout" text="Ready to Start!" />
+                              <Label fx:id="sout" text="Please insert parameters." />
                            </children>
                         </HBox>
                      </children>

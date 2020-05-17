@@ -118,4 +118,31 @@ public class MutatableGraph {
         }
         return true;
     }
+
+    private Mutator[] getRandomMutators(int amount, int bound){
+        Mutator[] result = new Mutator[amount];
+        Random generator = new Random();
+        for(int i=0;i<amount;i++){
+            result[i] = Mutator.values()[generator.nextInt(bound)];
+        }
+        return result;
+    }
+
+    public void applyRandomByPercentVert(double pers){
+        this.applyMutators(this.getRandomMutators((int)(this.jgraphContained.vertexSet().size()*pers),2));
+    }
+
+    public void applyRandomByPercentEdge(double pers){
+        this.applyMutators(this.getRandomMutators((int)(this.jgraphContained.edgeSet().size()*pers),2));
+    }
+
+    public void applyRandomByAmount(int amount){
+        this.applyMutators(this.getRandomMutators(amount,2));
+    }
+
+    public void applyMutators(Mutator[] mutators){
+        for(Mutator mutator:mutators){
+            this.applyOperator(mutator);
+        }
+    }
 }

@@ -8,69 +8,7 @@ import java.util.*;
 
 public class Scores {
 
-    public static void printAlphaCentrality(Graph graph){
-        System.out.println("============================Alpha Centrality============================");
-        AlphaCentrality scorer = new AlphaCentrality(graph);
-        Map scores = scorer.getScores();
-        for(Object key:scores.keySet()){
-            System.out.println("Score: "+key.toString()+" "+scores.get(key).toString());
-        }
-    }
-
-    public static void  printBetweennessCentrality(Graph graph){
-        System.out.println("============================Betweenness Centrality============================");
-        BetweennessCentrality scorer = new BetweennessCentrality(graph);
-        Map scores = scorer.getScores();
-        for(Object key:scores.keySet()){
-            System.out.println("Score: "+key.toString()+" "+scores.get(key).toString());
-        }
-    }
-
-    public static void printClosenessCentrality(Graph graph){
-        System.out.println("============================Closeness Centrality============================");
-        ClosenessCentrality scorer = new ClosenessCentrality(graph);
-        Map scores = scorer.getScores();
-        for(Object key:scores.keySet()){
-            System.out.println("Score: "+key.toString()+" "+scores.get(key).toString());
-        }
-    }
-
-    public static void printClusteringCoefficient(Graph graph){
-        System.out.println("============================Clustering Coefficient============================");
-        ClusteringCoefficient scorer = new ClusteringCoefficient(graph);
-        Map scores = scorer.getScores();
-        for(Object key:scores.keySet()){
-            System.out.println("Score: "+key.toString()+" "+scores.get(key).toString());
-        }
-    }
-
-    public static void printCoreness(Graph graph){
-        System.out.println("============================Coreness============================");
-        Coreness scorer = new Coreness(graph);
-        Map scores = scorer.getScores();
-        for(Object key:scores.keySet()){
-            System.out.println("Score: "+key.toString()+" "+scores.get(key).toString());
-        }
-    }
-
-    public static void printHarmonicCentrality(Graph graph){
-        System.out.println("============================Harmonic Centrality============================");
-        HarmonicCentrality scorer = new HarmonicCentrality(graph);
-        Map scores = scorer.getScores();
-        for(Object key:scores.keySet()){
-            System.out.println("Score: "+key.toString()+" "+scores.get(key).toString());
-        }
-    }
-
-    public static void printPageRank(Graph graph){
-        System.out.println("============================PageRank============================");
-        PageRank scorer = new PageRank(graph);
-        Map scores = scorer.getScores();
-        for(Object key:scores.keySet()){
-            System.out.println("Score: "+key.toString()+" "+scores.get(key).toString());
-        }
-    }
-    public static List<Map> scoreGraph(MutatableGraph graph){
+    public static List<Map> scoreGraph(MutatableGraph graph, ORCA_Adapter orca){
         ArrayList<Map> result = new ArrayList<Map>();
         result.add(getScores(new ClusteringCoefficient(graph.getJgraphContained())));
         result.add(getScores(new Coreness(graph.getJgraphContained())));
@@ -80,12 +18,11 @@ public class Scores {
         result.add(getScores(new HarmonicCentrality(graph.getJgraphContained())));
         result.add(getScores(new PageRank(graph.getJgraphContained())));
         result.add(getEigenvecorCentrality(graph));
-
-        //orbits
+        result = (ArrayList<Map>) orca.addGraphletScores(result,graph);
         return result;
     }
 
-    public static List<String> getScoreNames(){
+    public static List<String> getScoreNames(ORCA_Adapter orca){
         ArrayList<String> result = new ArrayList<String>();
         result.add("AlphaCentrality");
         result.add("BetweennessCentrality");
@@ -95,23 +32,23 @@ public class Scores {
         result.add("HarmonicCentrality");
         result.add("PageRank");
         result.add("Eigenvector");//Eigenvector
+        result = (ArrayList<String>) orca.addGraphletsNames(result);
         return result;
     }
 
-    public static Map<String,String> getEigenvecorCentrality(MutatableGraph graph){
+    private static Map<String,String> getEigenvecorCentrality(MutatableGraph graph){
         EigenvectorCentrality eig = new EigenvectorCentrality(graph.getJungContained());
         eig.evaluate();
         Map<String,String> result = new HashMap<>();
         Set<String> vertexSet = graph.getJgraphContained().vertexSet();
         for(String vert: vertexSet){
             Object res = eig.getVertexScore(vert);
-            System.out.println(vert);
             result.put(vert.toString(),res.toString());
         }
         return result;
     }
 
-    public static Map getScores(VertexScoringAlgorithm scorer){
+    private static Map getScores(VertexScoringAlgorithm scorer){
         return scorer.getScores();
     }
 }
