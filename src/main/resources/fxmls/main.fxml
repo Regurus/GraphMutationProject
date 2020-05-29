@@ -378,18 +378,21 @@
                                                             <HBox prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1">
                                                                <children>
                                                                   <TextField fx:id="ex_rnd_const_inp" prefHeight="25.0" prefWidth="70.0" text="0" />
+                                                                  <TextField prefHeight="25.0" prefWidth="61.0" />
                                                                </children>
                                                             </HBox>
                                                             <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
                                                                <children>
                                                                   <TextField fx:id="ex_rnd_edg_inp" prefHeight="25.0" prefWidth="70.0" text="0" />
                                                                   <Label text="\%" />
+                                                                  <TextField prefHeight="25.0" prefWidth="53.0" />
                                                                </children>
                                                             </HBox>
                                                             <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
                                                                <children>
                                                                   <TextField fx:id="ex_rnd_vert_inp" prefHeight="25.0" prefWidth="70.0" text="0" />
                                                                   <Label text="\%" />
+                                                                  <TextField prefHeight="25.0" prefWidth="55.0" />
                                                                </children>
                                                             </HBox>
                                                          </children>

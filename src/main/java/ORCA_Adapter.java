@@ -92,7 +92,7 @@ public class ORCA_Adapter {
 
     public List<String> addGraphletsNames(List<String> scores){
         for(int i=0;i<this.wide;i++){
-            scores.add("G"+(i+1));
+            scores.add("Orb"+(i+1));
         }
         return scores;
     }

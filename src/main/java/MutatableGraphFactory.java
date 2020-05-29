@@ -1,6 +1,8 @@
 import org.jgrapht.generate.*;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.DefaultUndirectedGraph;
+
+import static org.jgrapht.util.SupplierUtil.createIntegerSupplier;
 import static org.jgrapht.util.SupplierUtil.createStringSupplier;
 
 public class MutatableGraphFactory {
