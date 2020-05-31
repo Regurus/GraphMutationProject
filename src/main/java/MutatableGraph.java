@@ -10,14 +10,32 @@ public class MutatableGraph {
     //maintaining two type of graphs for additional scoring capability.
     private UndirectedSparseGraph jungContained;
     private HashSet<String> edgeMap;//used to prevent repetitive addition and conserve search time
+    private HashSet<String> missingEdgeMap;//used to prevent speed up addition in dense graphs
     private static Random generator = new Random();
+    private boolean filled = false;
+    private final int MAX_EDGES;
 
     public MutatableGraph(Graph jgraphContained) {
         this.jgraphContained = jgraphContained;
         this.jungContained = JUNG_Adapter.getJungGraph(jgraphContained);
         this.buildEdgeMap();
+        MAX_EDGES = (jgraphContained.vertexSet().size()*(jgraphContained.vertexSet().size()-1))/2;
+        if(edgeMap.size()>0.8*MAX_EDGES)
+            this.buildMissingEdgeMap();
     }
-
+    public void buildMissingEdgeMap(){
+        this.missingEdgeMap = new HashSet<>();
+        for(int i=0;i<this.jgraphContained.vertexSet().size();i++){
+            for(int j=0;j<this.jgraphContained.vertexSet().size();j++){
+                if(i==j)
+                    continue;
+                if(!this.jgraphContained.containsEdge(""+i,""+j)&&!this.jgraphContained.containsEdge(""+j,""+i)){
+                    if(!this.missingEdgeMap.contains("("+i+" : "+j+")")&&!this.missingEdgeMap.contains("("+j+" : "+i+")"))
+                        this.missingEdgeMap.add("("+i+" : "+j+")");
+                }
+            }
+        }
+    }
     private void buildEdgeMap(){
         Set<Object> edges = this.jgraphContained.edgeSet();
         this.edgeMap = new HashSet<>();
@@ -40,13 +58,17 @@ public class MutatableGraph {
     private void substractRandom(){
         Object[] edges = this.jgraphContained.edgeSet().toArray();
         int removedIndex = generator.nextInt(edges.length);
-        this.jungContained.removeEdge(edges[removedIndex].toString());
-        this.jgraphContained.removeEdge(edges[removedIndex]);
-        //System.out.println("removed: "+edges[removedIndex].toString());
-        this.edgeMap.remove(edges[removedIndex].toString());
+        String[] split = edges[removedIndex].toString().split(" : ");
+        this.removeEdge(split[0].substring(1),split[1].substring(0,split[1].length()-1));
     }
+    public void addRandomPrecalculated(){
+        int next = generator.nextInt(this.missingEdgeMap.size());
+        String nextEdge = this.missingEdgeMap.toArray()[next].toString();
+        String[] split = nextEdge.split(" : ");
+        this.addEdge(split[0].substring(1),split[1].substring(0,split[1].length()-1));
 
-    public void addRandom(){
+    }
+    public void addRandomNotPrecalculated(){
         Object[] vertices = this.jgraphContained.vertexSet().toArray();
         int sourceVert = 0;
         int destVert = 0;
@@ -57,11 +79,39 @@ public class MutatableGraph {
             if(this.edgeContained(vertices[sourceVert].toString(),vertices[destVert].toString()))//filtering reoccurring edges
                 sourceVert=destVert;
         }
-        this.jungContained.addEdge("("+vertices[sourceVert].toString()+" : "+vertices[destVert].toString()+")",
-                vertices[sourceVert].toString(),vertices[destVert].toString());
-        this.jgraphContained.addEdge(vertices[sourceVert],vertices[destVert]);
-        this.edgeMap.add("("+vertices[sourceVert].toString()+" : "+vertices[destVert].toString()+")");
-        //System.out.println("added: ("+vertices[sourceVert].toString()+" : "+vertices[destVert].toString()+")");
+        this.addEdge(vertices[sourceVert].toString(),vertices[destVert].toString());
+    }
+    public void addRandom(){
+        if(this.missingEdgeMap!=null){
+            addRandomPrecalculated();
+        }
+        else{
+            addRandomNotPrecalculated();
+        }
+    }
+
+    private void addEdge(String source,String target){
+        if(this.edgeMap.size()==this.MAX_EDGES){
+            this.filled = true;
+            return;
+        }
+        this.jungContained.addEdge("("+source+" : "+target+")",source,target);
+        this.jgraphContained.addEdge(source,target);
+        this.edgeMap.add("("+source+" : "+target+")");
+        if(this.missingEdgeMap!=null)
+            this.missingEdgeMap.remove("("+source+" : "+target+")");
+    }
+
+    private void removeEdge(String source,String target){
+        if(this.missingEdgeMap!=null&&this.missingEdgeMap.size()==0){
+            this.filled = true;
+            return;
+        }
+        this.jungContained.removeEdge("("+source+" : "+target+")");
+        this.jgraphContained.removeEdge(source,target);
+        this.edgeMap.remove("("+source+" : "+target+")");
+        if(this.missingEdgeMap!=null)
+            this.missingEdgeMap.add("("+source+" : "+target+")");
     }
 
     private boolean edgeContained(String source, String target){
@@ -119,8 +169,8 @@ public class MutatableGraph {
         return true;
     }
 
-    private Mutator[] getRandomMutators(int amount, int bound){
-        Mutator[] result = new Mutator[amount];
+    private Mutator[] getRandomMutators(double amount, int bound){
+        Mutator[] result = new Mutator[(int)amount];
         Random generator = new Random();
         for(int i=0;i<amount;i++){
             result[i] = Mutator.values()[generator.nextInt(bound)];
@@ -136,12 +186,14 @@ public class MutatableGraph {
         this.applyMutators(this.getRandomMutators((int)(this.jgraphContained.edgeSet().size()*pers),2));
     }
 
-    public void applyRandomByAmount(int amount){
+    public void applyRandomByAmount(double amount){
         this.applyMutators(this.getRandomMutators(amount,2));
     }
 
     public void applyMutators(Mutator[] mutators){
         for(Mutator mutator:mutators){
+            if(this.filled)
+                return;
             this.applyOperator(mutator);
         }
     }

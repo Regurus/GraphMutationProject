@@ -16,11 +16,11 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class MutatableGraphTest {
-    MutatableGraph tested = MutatableGraphFactory.getBarabasiGraph(10,1000);
+    MutatableGraph tested = MutatableGraphFactory.getBarabasiGraph(900,1000);
 
     @Test
     void assertIntegrity() {
-        for(int i=0; i<1000;i++){
+        for(int i=0; i<10;i++){
             Random generator = new Random();
             for(int j=0;j<500;j++){
                 tested.applyOperator(Mutator.values()[generator.nextInt(2)]);

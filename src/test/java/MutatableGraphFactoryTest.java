@@ -27,17 +27,17 @@ class MutatableGraphFactoryTest {
     }
 
     @Test
-    void getKleinbergSmallWorldGraphTest() {
-        MutatableGraph kleinberg = MutatableGraphFactory.getKleinbergSmallWorldGraph(10,10,10,10);
-        assertEquals(100,kleinberg.getJgraphContained().vertexSet().size(),"Incorrect kleinberg graph vert size");
-        assertEquals(4660,kleinberg.getJgraphContained().edgeSet().size(),"Incorrect kleinberg graph edge size");
+    void getStrogatzGraphTest() {
+        MutatableGraph strogatz = MutatableGraphFactory.getStrogatzGraph(100,6,0.5);
+        assertEquals(100,strogatz.getJgraphContained().vertexSet().size(),"Incorrect kleinberg graph vert size");
+        assertEquals(300,strogatz.getJgraphContained().edgeSet().size(),"Incorrect kleinberg graph edge size");
     }
 
     @Test
-    void getWindmillGraphTest() {
-        MutatableGraph windmill = MutatableGraphFactory.getWindmillGraph(2,3);
-        assertEquals(5,windmill.getJgraphContained().vertexSet().size(),"Incorrect kleinberg graph vert size");
-        assertEquals(6,windmill.getJgraphContained().edgeSet().size(),"Incorrect kleinberg graph edge size");
+    void getErdoshGraphTest() {
+        MutatableGraph erdposh = MutatableGraphFactory.getErdoshGraph(10,40);
+        assertEquals(10,erdposh.getJgraphContained().vertexSet().size(),"Incorrect kleinberg graph vert size");
+        assertEquals(40,erdposh.getJgraphContained().edgeSet().size(),"Incorrect kleinberg graph edge size");
     }
 
     @Test

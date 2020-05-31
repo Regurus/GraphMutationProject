@@ -1,27 +1,30 @@
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.*;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
+import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import java.awt.Desktop;
+
 import java.util.HashMap;
 import java.util.List;
 import java.io.File;
-import java.io.IOException;
 
 public class UIController {
     public static int jobs = 0;
     public static DoubleProperty progress = new SimpleDoubleProperty();
     public static BooleanProperty isDone = new SimpleBooleanProperty(false);
+    public static BooleanProperty graphSavePre = new SimpleBooleanProperty(false);
+    public static BooleanProperty graphSavePost = new SimpleBooleanProperty(false);
+    public static StringProperty graphSaveFolder = new SimpleStringProperty(" ");
     final FileChooser fileChooser = new FileChooser();
+    final DirectoryChooser directoryChooser = new DirectoryChooser();
+    @FXML
+    private GridPane active_pane;
     @FXML
     private VBox main_toolpane;
     @FXML
@@ -34,6 +37,14 @@ public class UIController {
     private TextField threads;
     @FXML
     private TextField saveAddress;
+
+    @FXML
+    private TextField grph_saveTo;
+    @FXML
+    private CheckBox grph_saveBefore;
+    @FXML
+    private CheckBox grph_saveAfter;
+
     //<editor-fold desc="Parts Fields">
     //barabasi
     @FXML
@@ -57,25 +68,23 @@ public class UIController {
     @FXML
     private TextField hyp_dim;
 
-    //kleinberg
+    //erdosh
     @FXML
-    private TextField kle_a;
+    private TextField erd_a;
     @FXML
-    private TextField kle_n;
+    private TextField erd_n;
     @FXML
-    private TextField kle_p;
-    @FXML
-    private TextField kle_q;
-    @FXML
-    private TextField kle_r;
+    private TextField erd_m;
 
-    //windmill
+    //strogatz
     @FXML
-    private TextField wind_a;
+    private TextField strog_a;
     @FXML
-    private TextField wind_m;
+    private TextField strog_n;
     @FXML
-    private TextField wind_n;
+    private TextField strog_k;
+    @FXML
+    private TextField strog_p;
 
     //wheel
     @FXML
@@ -133,19 +142,18 @@ public class UIController {
     }
 
     @FXML
-    private void toggleKleinberg(){
-        kle_a.setDisable(!kle_a.isDisabled());
-        kle_n.setDisable(!kle_n.isDisabled());
-        kle_p.setDisable(!kle_p.isDisabled());
-        kle_q.setDisable(!kle_q.isDisabled());
-        kle_r.setDisable(!kle_r.isDisabled());
+    private void toggleErdosh(){
+        erd_a.setDisable(!erd_a.isDisabled());
+        erd_n.setDisable(!erd_n.isDisabled());
+        erd_m.setDisable(!erd_m.isDisabled());
     }
 
     @FXML
-    private void toggleWindmill(){
-        wind_a.setDisable(!wind_a.isDisabled());
-        wind_m.setDisable(!wind_m.isDisabled());
-        wind_n.setDisable(!wind_n.isDisabled());
+    private void toggleStrogatz(){
+        strog_a.setDisable(!strog_a.isDisabled());
+        strog_n.setDisable(!strog_n.isDisabled());
+        strog_k.setDisable(!strog_k.isDisabled());
+        strog_p.setDisable(!strog_p.isDisabled());
     }
 
     @FXML
@@ -167,10 +175,12 @@ public class UIController {
         stage.close();
     }
     //</editor-fold>
-
     @FXML
     public void initialize(){
         main_toolpane.disableProperty().bindBidirectional(isDone);
+        grph_saveBefore.selectedProperty().bindBidirectional(graphSavePre);
+        grph_saveAfter.selectedProperty().bindBidirectional(graphSavePost);
+        grph_saveTo.textProperty().bindBidirectional(graphSaveFolder);
         //type selector init
         ex_rnd.setToggleGroup(ex_grp);
         ex_rnd.setSelected(true);
@@ -183,10 +193,10 @@ public class UIController {
         ex_rnd_vert_inp.setDisable(true);
         //setting open list to multiple choise
         cus_main.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-        this.num_inputs = new TextField[]{bar_a, bar_n, bar_m, pet_a, pet_n, pet_k, hyp_a, hyp_dim, kle_a, kle_n, kle_p, kle_q, kle_r,
-                wind_a, wind_m, wind_n, whe_a, whe_sz, threads, ex_rnd_const_inp, ex_rnd_edg_inp, ex_rnd_vert_inp};
+        this.num_inputs = new TextField[]{bar_a, bar_n, bar_m, pet_a, pet_n, pet_k, hyp_a, hyp_dim, erd_a, erd_n, erd_m,
+                strog_a, strog_n, strog_p, strog_k, whe_a, whe_sz, threads, ex_rnd_const_inp, ex_rnd_edg_inp,
+                ex_rnd_vert_inp};
     }
-
     @FXML
     private void resetInputsExRnd(ActionEvent e){
         ex_rnd_const_inp.setDisable(true);
@@ -234,8 +244,15 @@ public class UIController {
         File save = fileChooser.showSaveDialog(((Button)e.getSource()).getScene().getWindow());
         if(save != null)
             saveAddress.setText(save.getAbsolutePath());
+        fileChooser.getExtensionFilters().removeAll();
     }
-
+    @FXML
+    private void handleSaveFolder(final ActionEvent e){
+        File save = directoryChooser.showDialog(((Button)e.getSource()).getScene().getWindow());
+        if(save != null)
+            grph_saveTo.setText(save.getAbsolutePath());
+        System.out.println(11);
+    }
     @FXML
     private void start(){
         jobs = getJobs();
@@ -249,6 +266,11 @@ public class UIController {
             this.sout.setText("No file to save.");
             return;
         }
+        if((grph_saveAfter.selectedProperty().get()||grph_saveBefore.selectedProperty().get())
+                &&graphSaveFolder.getValue().equals(" ")){
+            this.sout.setText("No folder to save.");
+            return;
+        }
         isDone.setValue(true);
         switch (((RadioButton)ex_grp.getSelectedToggle()).getText()){
             case "Random Experiment":
@@ -260,7 +282,7 @@ public class UIController {
     }
 
     private void randomScenario(){
-        HashMap<String,Integer> variables = this.getVariables();
+        HashMap<String,Double> variables = this.getVariables();
         Runnable runnable = () -> {
             Experiments.randomExperiment(variables,cus_main.getItems().toArray(),saveAddress.getCharacters().toString());
         };
@@ -268,37 +290,36 @@ public class UIController {
         t.start();
     }
 
-    private HashMap<String,Integer> getVariables(){
-        HashMap<String,Integer> variables = new HashMap();
-        variables.put("bar_a",Integer.parseInt(bar_a.getCharacters().toString()));
-        variables.put("bar_n",Integer.parseInt(bar_n.getCharacters().toString()));
-        variables.put("bar_m",Integer.parseInt(bar_m.getCharacters().toString()));
-        variables.put("pet_a",Integer.parseInt(pet_a.getCharacters().toString()));
-        variables.put("pet_n",Integer.parseInt(pet_n.getCharacters().toString()));
-        variables.put("pet_k",Integer.parseInt(pet_k.getCharacters().toString()));
-        variables.put("hyp_a",Integer.parseInt(hyp_a.getCharacters().toString()));
-        variables.put("hyp_dim",Integer.parseInt(hyp_dim.getCharacters().toString()));
-        variables.put("kle_a",Integer.parseInt(kle_a.getCharacters().toString()));
-        variables.put("kle_n",Integer.parseInt(kle_n.getCharacters().toString()));
-        variables.put("kle_p",Integer.parseInt(kle_p.getCharacters().toString()));
-        variables.put("kle_q",Integer.parseInt(kle_q.getCharacters().toString()));
-        variables.put("kle_r",Integer.parseInt(kle_r.getCharacters().toString()));
-        variables.put("wind_a",Integer.parseInt(wind_a.getCharacters().toString()));
-        variables.put("wind_m",Integer.parseInt(wind_m.getCharacters().toString()));
-        variables.put("wind_n",Integer.parseInt(wind_n.getCharacters().toString()));
-        variables.put("whe_a",Integer.parseInt(whe_a.getCharacters().toString()));
-        variables.put("whe_sz",Integer.parseInt(whe_sz.getCharacters().toString()));
-        variables.put("threads",Integer.parseInt(threads.getCharacters().toString()));
-        variables.put("ex_rnd_const_inp",Integer.parseInt(ex_rnd_const_inp.getCharacters().toString()));
-        variables.put("ex_rnd_edg_inp",Integer.parseInt(ex_rnd_edg_inp.getCharacters().toString()));
-        variables.put("ex_rnd_vert_inp",Integer.parseInt(ex_rnd_vert_inp.getCharacters().toString()));
+    private HashMap<String,Double> getVariables(){
+        HashMap<String,Double> variables = new HashMap();
+        variables.put("bar_a",Double.parseDouble(bar_a.getCharacters().toString()));
+        variables.put("bar_n",Double.parseDouble(bar_n.getCharacters().toString()));
+        variables.put("bar_m",Double.parseDouble(bar_m.getCharacters().toString()));
+        variables.put("pet_a",Double.parseDouble(pet_a.getCharacters().toString()));
+        variables.put("pet_n",Double.parseDouble(pet_n.getCharacters().toString()));
+        variables.put("pet_k",Double.parseDouble(pet_k.getCharacters().toString()));
+        variables.put("hyp_a",Double.parseDouble(hyp_a.getCharacters().toString()));
+        variables.put("hyp_dim",Double.parseDouble(hyp_dim.getCharacters().toString()));
+        variables.put("erd_a",Double.parseDouble(erd_a.getCharacters().toString()));
+        variables.put("erd_n",Double.parseDouble(erd_n.getCharacters().toString()));
+        variables.put("erd_m",Double.parseDouble(erd_m.getCharacters().toString()));
+        variables.put("strog_a",Double.parseDouble(strog_a.getCharacters().toString()));
+        variables.put("strog_n",Double.parseDouble(strog_n.getCharacters().toString()));
+        variables.put("strog_p",Double.parseDouble(strog_p.getCharacters().toString()));
+        variables.put("strog_k",Double.parseDouble(strog_k.getCharacters().toString()));
+        variables.put("whe_a",Double.parseDouble(whe_a.getCharacters().toString()));
+        variables.put("whe_sz",Double.parseDouble(whe_sz.getCharacters().toString()));
+        variables.put("threads",Double.parseDouble(threads.getCharacters().toString()));
+        variables.put("ex_rnd_const_inp",Double.parseDouble(ex_rnd_const_inp.getCharacters().toString()));
+        variables.put("ex_rnd_edg_inp",Double.parseDouble(ex_rnd_edg_inp.getCharacters().toString()));
+        variables.put("ex_rnd_vert_inp",Double.parseDouble(ex_rnd_vert_inp.getCharacters().toString()));
         return variables;
     }
 
     private boolean validateInputs(){
         for(TextField input : num_inputs){
             try {
-                Integer.parseInt(input.getCharacters().toString());
+                Double.parseDouble(input.getCharacters().toString());
             }
             catch (Exception e){
                 return false;
@@ -312,8 +333,8 @@ public class UIController {
         result += Integer.parseInt(bar_a.getCharacters().toString());
         result += Integer.parseInt(pet_a.getCharacters().toString());
         result += Integer.parseInt(hyp_a.getCharacters().toString());
-        result += Integer.parseInt(kle_a.getCharacters().toString());
-        result += Integer.parseInt(wind_a.getCharacters().toString());
+        result += Integer.parseInt(erd_a.getCharacters().toString());
+        result += Integer.parseInt(strog_a.getCharacters().toString());
         result += Integer.parseInt(whe_a.getCharacters().toString());
         result += cus_main.getItems().size();
         return result;
