@@ -1,3 +1,5 @@
+package GraphProject;
+
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.DefaultUndirectedGraph;
 import org.jgrapht.nio.ImportException;

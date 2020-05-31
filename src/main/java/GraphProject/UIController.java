@@ -1,3 +1,5 @@
+package GraphProject;
+
 import javafx.beans.property.*;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -21,8 +23,7 @@ public class UIController {
     public static BooleanProperty graphSavePre = new SimpleBooleanProperty(false);
     public static BooleanProperty graphSavePost = new SimpleBooleanProperty(false);
     public static StringProperty graphSaveFolder = new SimpleStringProperty(" ");
-    final FileChooser fileChooser = new FileChooser();
-    final DirectoryChooser directoryChooser = new DirectoryChooser();
+
     @FXML
     private GridPane active_pane;
     @FXML
@@ -216,8 +217,12 @@ public class UIController {
     }
     @FXML
     public void handleAdd(final ActionEvent e) {
+        FileChooser fileChooser = new FileChooser();
         FileChooser.ExtensionFilter extFilter =
                 new FileChooser.ExtensionFilter("Graph files (*.csv)", "*.csv");
+        FileChooser.ExtensionFilter edgesFilter =
+                new FileChooser.ExtensionFilter("Edges file (*.edges)", "*.edges");
+        fileChooser.getExtensionFilters().add(edgesFilter);
         fileChooser.getExtensionFilters().add(extFilter);
         List<File> list = fileChooser.showOpenMultipleDialog(((Button)e.getSource()).getScene().getWindow());
         if (list != null) {
@@ -226,6 +231,7 @@ public class UIController {
                 cus_main.getItems().add(path);
             }
         }
+        fileChooser.getExtensionFilters().removeAll();
     }
     @FXML
     private void handleRemove(final ActionEvent e){
@@ -238,12 +244,11 @@ public class UIController {
     }
     @FXML
     private void handleSave(final ActionEvent e){
+        FileChooser fileChooser = new FileChooser();
         FileChooser.ExtensionFilter csvFilter =
-                new FileChooser.ExtensionFilter("Table file (*.csv)", "*.csv");
-        FileChooser.ExtensionFilter edgesFilter =
-                new FileChooser.ExtensionFilter("Edges file (*.edges)", "*.edges");
+                new FileChooser.ExtensionFilter("Table files ", "*.csv");
         fileChooser.getExtensionFilters().add(csvFilter);
-        fileChooser.getExtensionFilters().add(edgesFilter);
+
         File save = fileChooser.showSaveDialog(((Button)e.getSource()).getScene().getWindow());
         if(save != null)
             saveAddress.setText(save.getAbsolutePath());
@@ -251,10 +256,10 @@ public class UIController {
     }
     @FXML
     private void handleSaveFolder(final ActionEvent e){
+        DirectoryChooser directoryChooser = new DirectoryChooser();
         File save = directoryChooser.showDialog(((Button)e.getSource()).getScene().getWindow());
         if(save != null)
             grph_saveTo.setText(save.getAbsolutePath());
-        System.out.println(11);
     }
     @FXML
     private void start(){

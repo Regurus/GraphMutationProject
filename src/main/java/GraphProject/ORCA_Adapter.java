@@ -1,3 +1,5 @@
+package GraphProject;
+
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultEdge;
 
@@ -65,7 +67,7 @@ public class ORCA_Adapter {
             Process proc = run.exec(command);
             int exitVal = proc.waitFor();
             if(exitVal!=0)
-                throw new RuntimeException("ORCA runtime Error occured!");
+                throw new RuntimeException("GraphProject.ORCA runtime Error occured!");
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }

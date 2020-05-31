@@ -1,6 +1,7 @@
+package GraphProject;
+
 import edu.uci.ics.jung.graph.UndirectedSparseGraph;
 import org.jgrapht.Graph;
-import org.jgrapht.graph.DefaultEdge;
 
 
 import java.util.*;

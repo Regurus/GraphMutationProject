@@ -1,3 +1,5 @@
+package GraphProject;
+
 import javafx.application.Application;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
@@ -16,7 +18,7 @@ public class Runner extends Application{
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        Pane root = FXMLLoader.load(getClass().getResource("fxmls/main.fxml"));
+        Pane root = FXMLLoader.load(getClass().getResource("/fxmls/main.fxml"));
         primaryStage.initStyle(StageStyle.TRANSPARENT);
         root.setOnMousePressed(new EventHandler<MouseEvent>() {
             @Override
@@ -32,7 +34,7 @@ public class Runner extends Application{
                 primaryStage.setY(event.getScreenY() - yOffset);
             }
         });
-        primaryStage.setTitle("Graph Mutation Project Runner");
+        primaryStage.setTitle("Graph Mutation Project GraphProject.Runner");
         JMetro jMetro = new JMetro(Style.LIGHT);
         Scene scene = new Scene(root,600,800);
         jMetro.setScene(scene);

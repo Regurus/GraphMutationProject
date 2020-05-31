@@ -1,3 +1,5 @@
+package GraphProject;
+
 import com.google.common.eventbus.DeadEvent;
 import org.jgrapht.Graph;
 import edu.uci.ics.jung.graph.UndirectedSparseGraph;

@@ -1,5 +1,5 @@
-import edu.uci.ics.jung.algorithms.scoring.VertexScorer;
-import org.jgrapht.Graph;
+package GraphProject;
+
 import org.jgrapht.alg.interfaces.VertexScoringAlgorithm;
 import org.jgrapht.alg.scoring.*;
 import edu.uci.ics.jung.algorithms.scoring.EigenvectorCentrality;
