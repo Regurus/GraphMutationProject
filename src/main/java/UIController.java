@@ -238,9 +238,12 @@ public class UIController {
     }
     @FXML
     private void handleSave(final ActionEvent e){
-        FileChooser.ExtensionFilter extFilter =
+        FileChooser.ExtensionFilter csvFilter =
                 new FileChooser.ExtensionFilter("Table file (*.csv)", "*.csv");
-        fileChooser.getExtensionFilters().add(extFilter);
+        FileChooser.ExtensionFilter edgesFilter =
+                new FileChooser.ExtensionFilter("Edges file (*.edges)", "*.edges");
+        fileChooser.getExtensionFilters().add(csvFilter);
+        fileChooser.getExtensionFilters().add(edgesFilter);
         File save = fileChooser.showSaveDialog(((Button)e.getSource()).getScene().getWindow());
         if(save != null)
             saveAddress.setText(save.getAbsolutePath());

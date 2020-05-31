@@ -67,7 +67,10 @@ public class Experiments {
 
     private static ArrayList<MutatableGraph> getCustoms(Object[] paths, ArrayList<MutatableGraph> list){
         for(int i=0;i<paths.length;i++){
-            list.add(IOUtils.fileToGraph(paths[i].toString()));
+            if(paths[i].toString().substring(paths[i].toString().length()-3).equals("csv"))
+                list.add(IOUtils.fileToGraph(paths[i].toString()));
+            else
+                list.add(IOUtils.fileToGraph(paths[i].toString()));
         }
         return list;
     }

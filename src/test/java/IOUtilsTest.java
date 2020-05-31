@@ -13,4 +13,15 @@ class IOUtilsTest {
         assertEquals(graph, tested);
     }
 
+    @Test
+    void testEdgesFileImport(){
+        String path = "test.edges";
+        MutatableGraph graph = IOUtils.fileToGraphEdges(path);
+        assertEquals(graph.getJgraphContained().edgeSet().size(), 3239);
+        assertEquals(graph.getJgraphContained().vertexSet().size(), 924);
+        assertTrue(graph.getJgraphContained().containsEdge("60","65"));
+        assertTrue(graph.getJgraphContained().containsEdge("178","181"));
+        assertTrue(graph.getJgraphContained().containsEdge("33","140"));
+        assertTrue(graph.getJgraphContained().containsEdge("46","607"));
+    }
 }

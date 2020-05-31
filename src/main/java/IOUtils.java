@@ -86,6 +86,16 @@ public class IOUtils {
     public static MutatableGraph fileToGraph(String path){
         CSVImporter importer = new CSVImporter(CSVFormat.MATRIX,';');
         importer.setParameter(CSVFormat.Parameter.MATRIX_FORMAT_NODEID,true);
+        return getGraph(path,importer);
+    }
+
+    public static MutatableGraph fileToGraphEdges(String path){
+        CSVImporter importer = new CSVImporter(CSVFormat.ADJACENCY_LIST,' ');
+        importer.setParameter(CSVFormat.Parameter.EDGE_WEIGHTS,true);
+        return getGraph(path,importer);
+    }
+
+    private static MutatableGraph getGraph(String path, CSVImporter importer){
         File target = new File(path);
         try {
             InputStreamReader inputStreamReader = new InputStreamReader(new FileInputStream(target));
