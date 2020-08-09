@@ -33,19 +33,44 @@ public class ORCA_Adapter {
         }
     }
 
-    public long[][] getOrbits(MutatableGraph graph){
-        this.graphToPairFile(graph);
+    private Map[] encode(MutatableGraph graph){
+        Map[] result = new Map[2];
+        result[0] = new HashMap<String,Integer>();
+        result[1] = new HashMap<Integer,String>();
+        int count=0;
+        for(Object vert: graph.getJgraphContained().vertexSet()){
+            result[0].put(vert.toString(),count);
+            result[1].put(count++,vert.toString());
+        }
+        return result;
+    }
+
+    private List<Map> decode(long[][] coded,Map[] encoding){
+        ArrayList<Map> result = new ArrayList<>();
+        for(int i=0;i<coded[0].length;i++){
+            HashMap<String,Double> singleScore = new HashMap();
+            for(int j=0;j<coded.length;j++){
+                singleScore.put((String)encoding[1].get(j),(double)coded[j][i]);
+            }
+            result.add(singleScore);
+        }
+        return result;
+    }
+
+    public List<Map> getOrbits(MutatableGraph graph){
+        Map[] encoding = this.encode(graph);
+        this.graphToPairFile(graph,encoding);
         this.runORCA();
-        long[][] res = this.readResults();
+        long[][] res = this.readResults(encoding);
         //cleanup
         File cache = new File(CACHE_FILE);
         cache.delete();
         File temp = new File(TEMP_FILE);
         temp.delete();
-        return res;
+        return this.decode(res,encoding);
     }
 
-    private void graphToPairFile(MutatableGraph graph){
+    private void graphToPairFile(MutatableGraph graph,Map[] encoding){
         Graph g = graph.getJgraphContained();
         this.n = g.vertexSet().size();
         Set<DefaultEdge> edges = g.edgeSet();
@@ -53,7 +78,8 @@ public class ORCA_Adapter {
         for(DefaultEdge edge:edges){
             String edgeRepr = edge.toString();
             edgeRepr = edgeRepr.substring(1,edgeRepr.length()-1);
-            edgeRepr = edgeRepr.replace(" : "," ");
+            String[] split = edgeRepr.split(" : ");
+            edgeRepr = ""+encoding[0].get(split[0])+" "+encoding[0].get(split[1]);
             lines.add(edgeRepr);
         }
         String headerLine = this.n+" "+edges.size();
@@ -73,7 +99,7 @@ public class ORCA_Adapter {
         }
     }
 
-    private long[][] readResults(){
+    private long[][] readResults(Map[] encoding){
         long[][] result = new long[n][this.wide];
         try {
             BufferedReader bufferreader = new BufferedReader(new FileReader(TEMP_FILE));
@@ -94,19 +120,14 @@ public class ORCA_Adapter {
 
     public List<String> addGraphletsNames(List<String> scores){
         for(int i=0;i<this.wide;i++){
-            scores.add("Orb"+(i+1));
+            scores.add("Orb"+(i));
         }
         return scores;
     }
 
     public List<Map> addGraphletScores(List<Map> scores, MutatableGraph graph){
-        long[][] orbits = this.getOrbits(graph);
-        for(int i=0;i<this.wide;i++){
-            HashMap<String,String> map = new HashMap();
-            for(int j=0;j<this.n;j++){
-                map.put(""+j,""+orbits[j][i]);
-            }
-            scores.add(map);
+        for(Map score: this.getOrbits(graph)){
+            scores.add(score);
         }
         return scores;
     }

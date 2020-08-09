@@ -17,18 +17,27 @@ public class Scores {
         result.add(getScores(new ClosenessCentrality(graph.getJgraphContained())));
         result.add(getScores(new HarmonicCentrality(graph.getJgraphContained())));
         result.add(getScores(new PageRank(graph.getJgraphContained())));
-        result.add(getEigenvecorCentrality(graph));
+        try{
+            result.add(getEigenvecorCentrality(graph));
+        }
+        catch (Exception e){
+            HashMap<String,Double> alt = new HashMap<>();
+            for(Object vert: graph.getJgraphContained().vertexSet()){
+                alt.put(vert.toString(),-1.0);
+            }
+            result.add(alt);
+        }
         result = (ArrayList<Map>) orca.addGraphletScores(result,graph);
         return result;
     }
 
     public static List<String> getScoreNames(ORCA_Adapter orca){
         ArrayList<String> result = new ArrayList<String>();
+        result.add("ClusteringCoefficient");
+        result.add("Coreness");
         result.add("AlphaCentrality");
         result.add("BetweennessCentrality");
         result.add("ClosenessCentrality");
-        result.add("ClusteringCoefficient");
-        result.add("Coreness");
         result.add("HarmonicCentrality");
         result.add("PageRank");
         result.add("Eigenvector");//Eigenvector
@@ -40,8 +49,8 @@ public class Scores {
         EigenvectorCentrality eig = new EigenvectorCentrality(graph.getJungContained());
         eig.evaluate();
         Map<String,String> result = new HashMap<>();
-        Set<String> vertexSet = graph.getJgraphContained().vertexSet();
-        for(String vert: vertexSet){
+        Set vertexSet = graph.getJgraphContained().vertexSet();
+        for(Object vert: vertexSet){
             Object res = eig.getVertexScore(vert);
             result.put(vert.toString(),res.toString());
         }

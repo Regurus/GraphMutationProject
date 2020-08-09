@@ -33,21 +33,21 @@ class MutatableGraphFactoryTest {
     @Test
     void getStrogatzGraphTest() {
         MutatableGraph strogatz = MutatableGraphFactory.getStrogatzGraph(100,6,0.5);
-        assertEquals(100,strogatz.getJgraphContained().vertexSet().size(),"Incorrect kleinberg graph vert size");
-        assertEquals(300,strogatz.getJgraphContained().edgeSet().size(),"Incorrect kleinberg graph edge size");
+        assertEquals(100,strogatz.getJgraphContained().vertexSet().size(),"Incorrect strogatz graph vert size");
+        assertEquals(300,strogatz.getJgraphContained().edgeSet().size(),"Incorrect strogatz graph edge size");
     }
 
     @Test
     void getErdoshGraphTest() {
         MutatableGraph erdposh = MutatableGraphFactory.getErdoshGraph(10,40);
-        assertEquals(10,erdposh.getJgraphContained().vertexSet().size(),"Incorrect kleinberg graph vert size");
-        assertEquals(40,erdposh.getJgraphContained().edgeSet().size(),"Incorrect kleinberg graph edge size");
+        assertEquals(10,erdposh.getJgraphContained().vertexSet().size(),"Incorrect erdosh graph vert size");
+        assertEquals(40,erdposh.getJgraphContained().edgeSet().size(),"Incorrect erdosh graph edge size");
     }
 
     @Test
     void getWheelGraphTest() {
         MutatableGraph wheel = MutatableGraphFactory.getWheelGraph(11);
-        assertEquals(11,wheel.getJgraphContained().vertexSet().size(),"Incorrect kleinberg graph vert size");
-        assertEquals(20,wheel.getJgraphContained().edgeSet().size(),"Incorrect kleinberg graph edge size");
+        assertEquals(11,wheel.getJgraphContained().vertexSet().size(),"Incorrect wheel graph vert size");
+        assertEquals(20,wheel.getJgraphContained().edgeSet().size(),"Incorrect wheel graph edge size");
     }
 }

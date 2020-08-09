@@ -24,7 +24,7 @@ public class Experiments {
                 vars.get("threads"),graphs);
     }
 
-    private static ArrayList<MutatableGraph> getBarabasis(double a, double n, double m){
+    public static ArrayList<MutatableGraph> getBarabasis(double a, double n, double m){
         ArrayList result = new ArrayList();
         for(int i=0;i<a;i++){
             result.add(MutatableGraphFactory.getBarabasiGraph(m,n));
@@ -32,52 +32,56 @@ public class Experiments {
         return result;
     }
 
-    private static ArrayList<MutatableGraph> getErdosh(double a, double m, double n, ArrayList<MutatableGraph> list){
+    public static ArrayList<MutatableGraph> getErdosh(double a, double m, double n, ArrayList<MutatableGraph> list){
         for(int i=0;i<a;i++){
             list.add(MutatableGraphFactory.getErdoshGraph(n,m));
         }
         return list;
     }
 
-    private static ArrayList<MutatableGraph> getStrogatz(double a, double n, double p, double k, ArrayList<MutatableGraph> list){
+    public static ArrayList<MutatableGraph> getStrogatz(double a, double n, double p, double k, ArrayList<MutatableGraph> list){
         for(int i=0;i<a;i++){
             list.add(MutatableGraphFactory.getStrogatzGraph(n,k,p));
         }
         return list;
     }
 
-    private static ArrayList<MutatableGraph> getPetersens(double a,double n,double k, ArrayList<MutatableGraph> list){
+    public static ArrayList<MutatableGraph> getPetersens(double a,double n,double k, ArrayList<MutatableGraph> list){
         for(int i=0;i<a;i++){
             list.add(MutatableGraphFactory.getGeneralizedPetersenGraph(n,k));
         }
         return list;
     }
 
-    private static ArrayList<MutatableGraph> getHypercubes(double a,double dim, ArrayList<MutatableGraph> list){
+    public static ArrayList<MutatableGraph> getHypercubes(double a,double dim, ArrayList<MutatableGraph> list){
         for(int i=0;i<a;i++){
             list.add(MutatableGraphFactory.getHyperCubeGraph(dim));
         }
         return list;
     }
 
-    private static ArrayList<MutatableGraph> getWheels(double a,double sz, ArrayList<MutatableGraph> list){
+    public static ArrayList<MutatableGraph> getWheels(double a,double sz, ArrayList<MutatableGraph> list){
         for(int i=0;i<a;i++){
             list.add(MutatableGraphFactory.getWheelGraph(sz));
         }
         return list;
     }
 
-    private static ArrayList<MutatableGraph> getCustoms(Object[] paths, ArrayList<MutatableGraph> list){
+    public static ArrayList<MutatableGraph> getCustoms(Object[] paths, ArrayList<MutatableGraph> list){
         for(int i=0;i<paths.length;i++){
-            if(paths[i].toString().substring(paths[i].toString().length()-3).equals("csv"))
-                list.add(IOUtils.fileToGraph(paths[i].toString()));
-            else
-                list.add(IOUtils.fileToGraph(paths[i].toString()));
+            if(paths[i].toString().substring(paths[i].toString().length()-3).equals("csv")){
+                MutatableGraph graph = IOUtils.fileToGraph(paths[i].toString());
+                list.add(graph);
+            }
+            else{
+                MutatableGraph graph = IOUtils.fileToGraphEdges(paths[i].toString());
+                list.add(graph);
+            }
         }
         return list;
     }
 
-    private static void performExp(double vertP,double edgeP,double amount,double threads,ArrayList<MutatableGraph> graphs){
+    public static void performExp(double vertP,double edgeP,double amount,double threads,ArrayList<MutatableGraph> graphs){
         ExecutorService pool = Executors.newFixedThreadPool((int)threads);
         for(int i=0;i<graphs.size();i++){
             int ins = i;
@@ -95,9 +99,9 @@ public class Experiments {
         }
     }
 
-    private static void runSingle( MutatableGraph graph,double vertP,double edgeP,double amount,double instance){
+    public static void runSingle( MutatableGraph graph,double vertP,double edgeP,double amount,double instance){
         ORCA_Adapter orca = new ORCA_Adapter("node",5,""+instance);
-        String graphName = ""+graph.hashCode();
+        String graphName = ""+graph.getName();
         List<String> names = Scores.getScoreNames(orca);
         List<Map> old_scores = Scores.scoreGraph(graph,orca);
 
@@ -115,10 +119,11 @@ public class Experiments {
             saveGraph(graph,graphName+"_post");
 
         List<Map> new_scores = Scores.scoreGraph(graph,orca);
-        IOUtils.saveRunResults(new_scores,old_scores,names,graphName,savePath);
+        List<Map> meta = graph.getMetadata();
+        IOUtils.saveRunResults(new_scores,old_scores,meta,names,graphName,savePath);
     }
 
-    private static void saveGraph(MutatableGraph graph, String name){
+    public static void saveGraph(MutatableGraph graph, String name){
         IOUtils.graphToFile(graph,UIController.graphSaveFolder.get()+'\\'+name+".csv");
     }
 
